@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    This template extends invoice reports with Fintecture QR code.
+    It is loaded only if 'account' module is installed (via post_init_hook or at startup).
+    -->
+    <data>
+        <template id="payment_virementmaitrise.account_invoice_document_inherit"
+                  inherit_id="account.report_invoice_document">
+            <xpath expr="//div[hasclass('page')]//div[@id='informations']" position="after">
+                <!-- Only show QR code in PDF reports, not in web portal preview -->
+                <!-- Also check that the specific provider for this tenant is enabled -->
+                <t t-set="provider" t-value="o.env['payment.provider'].sudo().search([('code', '=', 'virementmaitrise'), ('company_id', '=', o.company_id.id)], limit=1)"/>
+                <div class="clearfix" t-if="o.fintecture_invoice_link_qr and o.fintecture_is_enabled and report_type == 'pdf' and provider and provider.state != 'disabled'"
+                     style="page-break-inside: avoid; margin-top: 10px;">
+                    <div class="row">
+                        <div class="col-9">
+                            You can pay via Virement Maitrisé (direct bank transfer)
+                            <a t-att-href="o.fintecture_payment_link"
+                               target="_blank" rel="noopener" style="font-weight: bold;">by clicking here</a>
+                            or scanning the QR code.
+                        </div>
+                        <div class="col-3" style="text-align:right;">
+                            <img t-if="o.fintecture_payment_qr"
+                                 t-attf-src="data:image/png;base64,#{o.fintecture_payment_qr}"
+                                 style="max-width: 100px; max-height: 100px;"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

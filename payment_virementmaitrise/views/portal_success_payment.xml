@@ -1,0 +1,14 @@
+<odoo>
+    <template id="success_payment" name="Successfully payment">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Payments</t>
+            </t>
+            <t t-if="status == 'payment_created'">
+                <p>The payment was completed successfully.</p>
+            </t>
+        </t>
+    </template>
+</odoo>

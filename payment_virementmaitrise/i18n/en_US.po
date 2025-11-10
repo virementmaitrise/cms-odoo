@@ -1,0 +1,340 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* payment_fintecture
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 15.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-21 06:24+0000\n"
+"PO-Revision-Date: 2022-09-21 06:24+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_app_id
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_pis_app_id
+msgid "Application ID"
+msgstr "Application ID"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_app_secret
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_pis_app_secret
+msgid "Application Secret"
+msgstr "Application Secret"
+
+#. module: payment_fintecture
+#: model:ir.model,name:payment_fintecture.model_res_company
+msgid "Companies"
+msgstr "Companies"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_connection_id
+msgid "Connection identifier"
+msgstr "Connection identifier"
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_acquirer.py:0
+#, python-format
+msgid "Could not establish the connection to the API."
+msgstr "Could not establish the connection to the API."
+
+#. module: payment_fintecture
+#: model:ir.model.fields.selection,name:payment_fintecture.selection__payment_acquirer__fintecture_viban_unique_key__customer
+msgid "Customer"
+msgstr "Customer"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_customer_id
+msgid "Customer ID"
+msgstr "Customer ID"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_private_key_filename
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_pis_private_key_filename
+msgid "Filename of Private Key file"
+msgstr "Filename of Private Key file"
+
+#. module: payment_fintecture
+#: model:account.payment.method,name:payment_fintecture.payment_method_fintecture
+#: model:ir.model.fields.selection,name:payment_fintecture.selection__payment_acquirer__provider__fintecture
+#: model:payment.acquirer,name:payment_fintecture.payment_acquirer_fintecture
+msgid "Fintecture"
+msgstr "Fintecture"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_access_token
+msgid "Fintecture AIS Access Token"
+msgstr "Fintecture AIS Access Token"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_refresh_token
+msgid "Fintecture AIS Refresh Token"
+msgstr "Fintecture AIS Refresh Token"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_token__fintecture_provider
+msgid "Fintecture Bank Provider"
+msgstr "Fintecture Bank Provider"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_code
+msgid "Fintecture Code for AIS Authentication"
+msgstr "Fintecture Code for AIS Authentication"
+
+#. module: payment_fintecture
+#: model_terms:ir.ui.view,arch_db:payment_fintecture.payment_acquirer_form
+msgid "Fintecture Configuration"
+msgstr "Fintecture Configuration"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_iban_swift_bic
+msgid "Fintecture IBAN SWIFT/BIC"
+msgstr "Fintecture IBAN SWIFT/BIC"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_iban_account
+msgid "Fintecture IBAN account"
+msgstr "Fintecture IBAN account"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_iban_bank_address
+msgid "Fintecture IBAN bank address"
+msgstr "Fintecture IBAN bank address"
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_iban_bank_name
+msgid "Fintecture IBAN bank name"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_iban_holder
+msgid "Fintecture IBAN holder"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_payment_intent
+msgid "Fintecture Payment Intent ID"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_token__fintecture_payment_method
+msgid "Fintecture Payment Method"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_token__fintecture_type
+msgid "Fintecture Type"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_url
+msgid "Fintecture URL"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_transaction__fintecture_virtual_beneficiary
+msgid "Fintecture Virtual Beneficiary"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_invoice_link_qr
+msgid "Include link/QR in invoices"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_sale_link_qr
+msgid "Include link/QR in quotes"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_invoice_viban
+msgid "Include virtual IBAN in invoices"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_sale_viban
+msgid "Include virtual IBAN in quotes"
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_acquirer.py:0
+#, python-format
+msgid ""
+"Invalid authentication. Check your credential in payment acquirer "
+"configuration page."
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_transaction.py:0
+#, python-format
+msgid "Invalid transaction operation."
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields.selection,name:payment_fintecture.selection__payment_acquirer__fintecture_viban_unique_key__invoice
+msgid "Invoice"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields.selection,name:payment_fintecture.selection__payment_acquirer__fintecture_viban_unique_key__journal
+msgid "Journal"
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_transaction.py:0
+#, python-format
+msgid "No transaction found matching reference '%s.'"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model,name:payment_fintecture.model_payment_acquirer
+msgid "Payment Acquirer"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.actions.act_window,name:payment_fintecture.action_payment_acquirer_onboarding
+msgid "Payment Acquirers"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model,name:payment_fintecture.model_payment_token
+msgid "Payment Token"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model,name:payment_fintecture.model_payment_transaction
+msgid "Payment Transaction"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_private_key_file
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_pis_private_key_file
+msgid "Private Key File"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields.selection,name:payment_fintecture.selection__payment_acquirer__fintecture_viban_unique_key__project
+msgid "Project"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__provider
+msgid "Provider"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_ais_provider
+msgid "Provider Bank"
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_transaction.py:0
+#, python-format
+msgid "Received data has an invalid structure."
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_transaction.py:0
+#, python-format
+msgid "Received data is missing transfer state or session status information."
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_transaction.py:0
+#, python-format
+msgid "Received data with invalid intent state or status: %s"
+msgstr ""
+
+#. module: payment_fintecture
+#: model_terms:ir.ui.view,arch_db:payment_fintecture.payment_acquirer_form
+msgid "Connection Parameters"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,help:payment_fintecture.field_payment_acquirer__provider
+msgid "The Payment Service Provider to use with this acquirer"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,help:payment_fintecture.field_payment_acquirer__fintecture_ais_code
+msgid ""
+"The code value has a limit period of time, then it will expires. Its only "
+"used for oAuth in Fintecture AIS Application"
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_acquirer.py:0
+#, python-format
+msgid ""
+"The communication with the API failed.\n"
+"Fintecture gave us the following info about the problem:\n"
+"'%s'"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,help:payment_fintecture.field_payment_acquirer__fintecture_ais_app_id
+#: model:ir.model.fields,help:payment_fintecture.field_payment_acquirer__fintecture_pis_app_id
+msgid "The key solely used to identify application with Fintecture"
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,help:payment_fintecture.field_payment_acquirer__fintecture_ais_private_key_file
+#: model:ir.model.fields,help:payment_fintecture.field_payment_acquirer__fintecture_pis_private_key_file
+msgid ""
+"The private key content is saved in an external file recovered from your "
+"Fintecture developer account. This signing secret must be set to "
+"authenticate the messages sent from Fintecture to Odoo."
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_token.py:0
+#, python-format
+msgid "Unable to convert payment token to new API."
+msgstr ""
+
+#. module: payment_fintecture
+#: model:ir.model.fields,field_description:payment_fintecture.field_payment_acquirer__fintecture_viban_unique_key
+msgid "Unique key for virtual IBAN"
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_acquirer.py:0
+#, python-format
+msgid ""
+"You cannot set project as unique key because you need install the project "
+"module. <a href='{}'>Install</a>"
+msgstr ""
+
+#. module: payment_fintecture
+#: code:addons/payment_fintecture/models/payment_acquirer.py:0
+#, python-format
+msgid ""
+"You cannot set the acquirer to Test Mode while it is linked with your "
+"Fintecture account."
+msgstr ""
+
+#. module: payment_fintecture
+#: model_terms:payment.acquirer,auth_msg:payment_fintecture.payment_acquirer_fintecture
+msgid "Your payment has been authorized."
+msgstr ""
+
+#. module: payment_fintecture
+#: model_terms:payment.acquirer,cancel_msg:payment_fintecture.payment_acquirer_fintecture
+msgid "Your payment has been cancelled."
+msgstr ""
+
+#. module: payment_fintecture
+#: model_terms:payment.acquirer,pending_msg:payment_fintecture.payment_acquirer_fintecture
+msgid ""
+"Your payment has been successfully processed but is waiting for approval."
+msgstr ""
+
+#. module: payment_fintecture
+#: model_terms:payment.acquirer,done_msg:payment_fintecture.payment_acquirer_fintecture
+msgid "Your payment has been successfully processed. Thank you!"
+msgstr ""

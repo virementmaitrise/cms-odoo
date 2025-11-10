@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="payment_form" inherit_id="payment.form">
+        <xpath expr="." position="inside">
+            <t t-call="payment_virementmaitrise.sdk_assets"/>
+        </xpath>
+    </template>
+
+
+    <template id="express_checkout" inherit_id="payment.express_checkout">
+        <xpath expr="." position="inside">
+            <t t-call="payment_virementmaitrise.sdk_assets"/>
+        </xpath>
+    </template>
+
+    <template id="sdk_assets">
+        <!-- Virement Maitrisé SDK assets if needed -->
+        <!-- <script type="text/javascript" src="https://sdk.example.com/v1/"></script> -->
+    </template>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="payment_provider_virementmaitrise" model="payment.provider">
+        <field name="name">Virement Maitrisé</field>
+        <field name="code">virementmaitrise</field>
+        <field name="image_128" type="base64" file="payment_virementmaitrise/static/src/img/icon.png"/>
+        <field name="inline_form_view_id" ref="inline_form"/>
+        <field name="express_checkout_form_view_id" ref="express_checkout_form"/>
+        <field name="allow_tokenization">False</field>
+        <field name="allow_express_checkout">False</field>
+        <field name="payment_method_ids" eval="[Command.set([ref('payment_virementmaitrise.payment_method_virementmaitrise_bank_transfer')])]"/>
+    </record>
+
+
+</odoo>

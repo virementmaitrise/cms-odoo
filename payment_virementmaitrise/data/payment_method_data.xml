@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="payment_method_virementmaitrise_bank_transfer" model="payment.method">
+        <field name="name">Virement Maitrisé</field>
+        <field name="code">virementmaitrise_bank_transfer</field>
+        <field name="sequence">1000</field>
+        <field name="active">True</field>
+        <field name="image" type="base64" file="payment_virementmaitrise/static/src/img/icon.png"/>
+        <field name="support_tokenization">False</field>
+        <field name="support_express_checkout">False</field>
+        <field name="support_refund">partial</field>
+        <!-- <field name="supported_country_ids" eval="[(6, 0, [])]"/> -->
+        <field name="supported_currency_ids" eval="[(6, 0, [ref('base.EUR')])]"/>
+    </record>
+
+</odoo>

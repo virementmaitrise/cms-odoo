@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virement Maitrisé - Module de Paiement pour Odoo 18</title>
+    <link rel="stylesheet" type="text/css" href="../common/bootstrap.min.css"/>
+</head>
+
+<body>
+<div class="container">
+    <section style="margin: 25px 0 60px;">
+        <h2 style="color:#E60028; font-family:'Lato', 'Open Sans', 'Helvetica', Sans; text-align:center; margin-bottom:32px;">
+            <b>Virement Maitrisé</b>
+        </h2>
+        <p style="font-weight: 600;font-size:20px; line-height:150% !important; font-family:'Lato', 'Open Sans', 'Helvetica', Sans !important; text-align:center;color: #646464;margin-bottom: 56px;">
+            Acceptez les virements bancaires instantanés sécurisés. Les paiements sont traités via Société Générale. Support intégré pour e-commerce, factures et paiements par QR code.
+        </p>
+        <div class="text-center" style="margin-bottom: 60px">
+            <a class="btn-hover"
+               style="width:200px; font-family:'Lato', 'Open Sans', 'Helvetica', Sans; font-size:19px; font-weight:600; color:#fff; margin:20px; height:55px; text-align:center; border:none; border-radius:50px; background-color:#E60028; padding:19px 66px"
+               href="mailto:support@virementmaitrise.societegenerale.eu" target="_blank">NOUS CONTACTER</a>
+        </div>
+    </section>
+    <section style="padding:34px 44px; margin-bottom: 100px; background-color:#f6f7f9; border-radius:10px">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse"
+                           style="color:#E60028;font-weight: 400;font-size: 20px;padding: 18px 15px 18px 40px;display: block;"
+                           data-parent="#accordion" href="#collapse1">
+                            Fonctionnalités Principales
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse">
+                    <div class="panel-body">
+                        <p>
+                            <strong>Ce module Odoo 18 offre :</strong>
+                        </p>
+                        <ul>
+                            <li>
+                                <strong>Intégration E-commerce :</strong> Acceptez les virements bancaires instantanés lors du paiement sur votre
+                                site Odoo. Les clients sont redirigés en toute sécurité pour finaliser leur paiement via Société Générale.
+                            </li>
+                            <li>
+                                <strong>Liens de Paiement sur Factures :</strong> Génération automatique de liens de paiement et de QR codes
+                                sur les factures. Aucun module supplémentaire nécessaire - le support des factures est intégré.
+                            </li>
+                            <li>
+                                <strong>Paiements par QR Code :</strong> Les clients peuvent scanner les QR codes sur les factures ou devis
+                                pour payer instantanément depuis leur application bancaire mobile.
+                            </li>
+                            <li>
+                                <strong>Rapprochement Automatique :</strong> Les paiements sont automatiquement associés aux commandes
+                                et factures via des notifications webhook.
+                            </li>
+                            <li>
+                                <strong>Support des Remboursements :</strong> Effectuez des remboursements totaux ou partiels directement depuis Odoo.
+                            </li>
+                            <li>
+                                <strong>Support Multi-sociétés :</strong> Configurez différents identifiants pour
+                                chaque société dans votre instance Odoo.
+                            </li>
+                            <li>
+                                <strong>Modes Test & Production :</strong> Testez votre intégration en toute sécurité avant la mise en production.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse"
+                           style="color:#E60028;font-weight: 400;font-size: 20px;padding: 18px 15px 18px 40px;display: block;"
+                           data-parent="#accordion" href="#collapse2">
+                            Comment Ça Marche
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse2" class="panel-collapse">
+                    <div class="panel-body">
+                        <p>
+                            <strong>Pour l'E-commerce :</strong>
+                        </p>
+                        <p class="mx-3">
+                            1. Le client ajoute des produits au panier et procède au paiement<br/>
+                            2. Le client sélectionne "Virement Maitrise" comme méthode de paiement<br/>
+                            3. Le client est redirigé vers la page de paiement sécurisée de Société Générale<br/>
+                            4. Le client sélectionne sa banque et autorise le virement<br/>
+                            5. Le client est redirigé vers votre boutique avec confirmation du paiement<br/>
+                        </p>
+                        <p>
+                            <strong>Pour les Factures :</strong>
+                        </p>
+                        <p class="mx-3">
+                            1. Activez l'affichage du QR code/lien de paiement dans les paramètres Virement Maitrise<br/>
+                            2. Créez et envoyez vos factures comme d'habitude dans Odoo<br/>
+                            3. Les factures incluent automatiquement un lien de paiement et un QR code<br/>
+                            4. Les clients cliquent sur le lien ou scannent le QR code pour payer instantanément<br/>
+                            5. Le statut de la facture est automatiquement mis à jour lors de la réception du paiement<br/>
+                        </p>
+                        <p>
+                            <strong>Tous les statuts de paiement sont automatiquement synchronisés via des webhooks sécurisés.</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse"
+                           style="color:#E60028;font-weight: 400;font-size: 20px;padding: 18px 15px 18px 40px;display: block;"
+                           data-parent="#accordion" href="#collapse3">
+                            Configuration
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse3" class="panel-collapse">
+                    <div class="panel-body">
+                        <p>
+                            <strong>ÉTAPE 1 : Installer le Module</strong><br/>
+                            Installez le module <em>Virement Maitrise</em> depuis le menu Applications Odoo.
+                            Aucun module supplémentaire n'est requis pour le support des factures.
+                        </p>
+                        <p>
+                            <strong>ÉTAPE 2 : Configurer les Identifiants</strong><br/>
+                            Allez dans <em>Paramètres → Fournisseurs de Paiement → Virement Maitrise</em>
+                        </p>
+                        <ul>
+                            <li>Saisissez votre <strong>ID d'Application PIS</strong></li>
+                            <li>Saisissez votre <strong>Secret d'Application PIS</strong></li>
+                            <li>Téléversez votre <strong>Fichier de Clé Privée PIS</strong></li>
+                            <li>Choisissez l'état <em>Test</em> ou <em>Activé</em></li>
+                        </ul>
+                        <p>
+                            <em>Les identifiants sont fournis par Société Générale lors de l'activation du service.</em>
+                        </p>
+                        <p>
+                            <strong>ÉTAPE 3 : Configurer les Options d'Affichage</strong><br/>
+                            Choisissez comment les options de paiement apparaissent sur les factures :
+                        </p>
+                        <ul>
+                            <li><strong>Inclure lien/QR sur les factures :</strong> Afficher les liens de paiement et QR codes sur les factures PDF</li>
+                        </ul>
+                        <p>
+                            <strong>ÉTAPE 4 : Tester Votre Intégration</strong><br/>
+                            En mode test, vous pouvez simuler des paiements sans virements bancaires réels.
+                            Utilisez l'environnement de test pour valider votre configuration avant la mise en production.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse"
+                           style="color:#E60028;font-weight: 400;font-size: 20px;padding: 18px 15px 18px 40px;display: block;"
+                           data-parent="#accordion" href="#collapse4">
+                            Avantages
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse4" class="panel-collapse">
+                    <div class="panel-body">
+                        <ul>
+                            <li>
+                                <strong>Sécurisé :</strong> Paiements traités via l'infrastructure bancaire de Société Générale
+                            </li>
+                            <li>
+                                <strong>Instantané :</strong> Recevez les fonds immédiatement grâce aux virements bancaires instantanés
+                            </li>
+                            <li>
+                                <strong>Simple :</strong> Les clients paient directement depuis leur application bancaire - aucun détail de carte requis
+                            </li>
+                            <li>
+                                <strong>Automatisé :</strong> Les paiements sont automatiquement associés aux factures et commandes
+                            </li>
+                            <li>
+                                <strong>Complet :</strong> Un seul module gère à la fois les paiements e-commerce et les factures
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" data-toggle="collapse"
+                           style="color:#E60028;font-weight: 400;font-size: 20px;padding: 18px 15px 18px 40px;display: block;"
+                           data-parent="#accordion" href="#collapse5">
+                            Support & Contact
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapse5" class="panel-collapse">
+                    <div class="panel-body">
+                        <p>
+                            <strong>Support Technique :</strong><br/>
+                            Pour toute question concernant l'intégration Odoo ou pour activer le service :
+                            <a href="mailto:support@virementmaitrise.societegenerale.eu">support@virementmaitrise.societegenerale.eu</a>
+                        </p>
+                        <p>
+                            Tous les paiements sont traités de manière sécurisée via l'infrastructure bancaire de la Société Générale.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<style>
+    .nav-item a.active {
+        background: #fff !important;
+        color: #E60028 !important;
+        padding-bottom: 12px !important;
+    }
+
+    .carousel-control-next-icon,
+    .carousel-control-prev-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .carousel-control-next-icon {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z' /%3E%3C/svg%3E");
+        right: 0;
+        position: absolute;
+    }
+
+    .carousel-control-prev-icon {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z' /%3E%3C/svg%3E");
+        left: 0;
+        position: absolute;
+    }
+
+    .panel-body {
+        padding: 0.9375rem;
+    }
+
+    .panel.panel-default {
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .panel-heading .panel-title > a {
+        position: relative;
+        padding: 18px 15px 18px 50px !important;
+    }
+
+    .panel-heading .panel-title > a:before {
+        content: "";
+        height: 20px;
+        width: 20px;
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath id='minus-circle' d='M17,13H7V11H17M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Z' transform='translate(-2 -2)' fill='%23E60028'/%3E%3C/svg%3E%0A");
+        background-repeat: no-repeat;
+        transform: translateY(-50%);
+    }
+
+    .panel-heading .panel-title > a.collapsed:before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath id='plus-circle' d='M17,13H13v4H11V13H7V11h4V7h2v4h4M12,2A10,10,0,1,0,22,12,10,10,0,0,0,12,2Z' transform='translate(-2 -2)' fill='%23E60028'/%3E%3C/svg%3E%0A");
+    }
+</style>
+<!-- JS -->
+<script src="../common/jquery-3.6.0.min.js"></script>
+<script src="../common/bootstrap.bundle.min.js"></script>
+<script src="../common/scripts.js"></script>
+</body>
+</html>

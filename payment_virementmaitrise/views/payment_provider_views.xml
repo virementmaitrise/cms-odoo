@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="payment_provider_form" model="ir.ui.view">
+        <field name="name">Virement Maitrisé Provider Form</field>
+        <field name="model">payment.provider</field>
+        <field name="inherit_id" ref="payment.payment_provider_form"/>
+        <field name="arch" type="xml">
+            <group name="provider_credentials" position="inside">
+                <group invisible="code != 'virementmaitrise'" name="fintecture_credentials">
+                    <separator string="Virement Maitrisé API Credentials" colspan="2"/>
+                    <field name="fintecture_pis_app_id" required="code == 'virementmaitrise' and state != 'disabled'"/>
+                    <field name="fintecture_pis_app_secret" required="code == 'virementmaitrise' and state != 'disabled'" password="True"/>
+                    <field name="fintecture_pis_private_key_filename"/>
+                    <field name="fintecture_pis_private_key_file" filename="fintecture_pis_private_key_filename"/>
+
+                    <separator string="Options" colspan="2"/>
+                    <field name="fintecture_invoice_link_qr"/>
+
+                    <!-- VIBAN OPTIONS - Currently disabled, keep for future use
+                    <separator string="Quote Options" colspan="2"/>
+                    <field name="fintecture_sale_viban"/>
+                    <field name="fintecture_sale_link_qr"/>
+                    <field name="fintecture_invoice_viban"/>
+                    <separator string="Advanced Options" colspan="2"/>
+                    <field name="fintecture_viban_unique_key"/>
+                    -->
+                    
+                    <separator string="Webhook Configuration" colspan="2"/>
+                    <div colspan="2" class="alert alert-info" role="alert" style="margin-bottom: 0px;">
+                        <p>Configure this webhook URL in your Virement Maitrisé developer console:</p>
+                        <field name="fintecture_webhook_url" readonly="1" class="oe_inline" style="font-family: monospace; font-weight: bold;"/>
+                        <p style="margin-top: 10px; margin-bottom: 0;">This webhook allows Odoo to receive real-time payment status updates from Virement Maitrisé.</p>
+                    </div>
+                </group>
+            </group>
+        </field>
+    </record>
+
+</odoo>

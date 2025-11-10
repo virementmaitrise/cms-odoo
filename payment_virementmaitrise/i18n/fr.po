@@ -1,0 +1,409 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* payment_virementmaitrise
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-09-21 06:26+0000\n"
+"PO-Revision-Date: 2022-09-21 06:26+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_app_id
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_pis_app_id
+msgid "Application ID"
+msgstr "App ID"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_app_secret
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_pis_app_secret
+msgid "Application Secret"
+msgstr "App Secret"
+
+#. module: payment_virementmaitrise
+#: model:ir.model,name:payment_virementmaitrise.model_res_company
+msgid "Companies"
+msgstr "Entreprises"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_connection_id
+msgid "Connection identifier"
+msgstr "Identifiants de connexion"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_provider.py:0
+#, python-format
+msgid "Could not establish the connection to the API."
+msgstr "Impossible d'établir la connexion à l'API."
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields.selection,name:payment_virementmaitrise.selection__payment_provider__fintecture_viban_unique_key__customer
+msgid "Customer"
+msgstr "Client"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_customer_id
+msgid "Customer ID"
+msgstr "ID Client"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_private_key_filename
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_pis_private_key_filename
+msgid "Filename of Private Key file"
+msgstr "Clé privée"
+
+#. module: payment_virementmaitrise
+#: model:account.payment.method,name:payment_virementmaitrise.payment_method_fintecture
+#: model:ir.model.fields.selection,name:payment_virementmaitrise.selection__payment_provider__provider__fintecture
+#: model:payment.provider,name:payment_virementmaitrise.payment_provider_fintecture
+msgid "payment_virementmaitrise"
+msgstr "payment_virementmaitrise"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_access_token
+msgid "Fintecture AIS Access Token"
+msgstr "Fintecture AIS Access Token"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_refresh_token
+msgid "Fintecture AIS Refresh Token"
+msgstr "Fintecture AIS Refresh Token"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_token__fintecture_provider
+msgid "Fintecture Bank Provider"
+msgstr "Fintecture Bank Provider"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_code
+msgid "Fintecture Code for AIS Authentication"
+msgstr "Fintecture Code for AIS Authentication"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "Fintecture Configuration"
+msgstr "Configuration de Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_iban_swift_bic
+msgid "Fintecture IBAN SWIFT/BIC"
+msgstr "Fintecture IBAN SWIFT/BIC"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_iban_account
+msgid "Fintecture IBAN account"
+msgstr "Compte Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_iban_bank_address
+msgid "Fintecture IBAN bank address"
+msgstr "Adresse de la banque Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_iban_bank_name
+msgid "Fintecture IBAN bank name"
+msgstr "Nom de la banque Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_iban_holder
+msgid "Fintecture IBAN holder"
+msgstr "Titulaire IBAN Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_payment_intent
+msgid "Fintecture Payment Intent ID"
+msgstr "Fintecture Payment Intent ID"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_token__fintecture_payment_method
+msgid "Fintecture Payment Method"
+msgstr "Méthode de paiement Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_token__fintecture_type
+msgid "Fintecture Type"
+msgstr "Type Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_url
+msgid "Fintecture URL"
+msgstr "URL Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_transaction__fintecture_virtual_beneficiary
+msgid "Fintecture Virtual Beneficiary"
+msgstr "Bénéficiaire virtuel Fintecture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_invoice_link_qr
+msgid "Include link/QR in invoices"
+msgstr "Inclure lien et QR code dans vos factures"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_sale_link_qr
+msgid "Include link/QR in quotes"
+msgstr "Inclure lien et QR code dans vos devis"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_invoice_viban
+msgid "Include virtual IBAN in invoices"
+msgstr "Inclure l'IBAN virtuel dans vos factures"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_sale_viban
+msgid "Include virtual IBAN in quotes"
+msgstr "Inclure l'IBAN virtuel dans vos devis"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_provider.py:0
+#, python-format
+msgid ""
+"Invalid authentication. Check your credential in payment acquirer "
+"configuration page."
+msgstr "Authentification invalide. Vérifiez vos informations d'identification "
+"dans la page de configuration."
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_transaction.py:0
+#, python-format
+msgid "Invalid transaction operation."
+msgstr "Opération de transaction non valide."
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields.selection,name:payment_virementmaitrise.selection__payment_provider__fintecture_viban_unique_key__invoice
+msgid "Invoice"
+msgstr "Facture"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields.selection,name:payment_virementmaitrise.selection__payment_provider__fintecture_viban_unique_key__journal
+msgid "Journal"
+msgstr "Journal"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_transaction.py:0
+#, python-format
+msgid "No transaction found matching reference '%s.'"
+msgstr "Aucune transaction trouvée correspondant à la référence '%s.'"
+
+#. module: payment_virementmaitrise
+#: model:ir.model,name:payment_virementmaitrise.model_payment_provider
+msgid "Payment Acquirer"
+msgstr "Intermédiaire de Paiement"
+
+#. module: payment_virementmaitrise
+#: model:ir.actions.act_window,name:payment_virementmaitrise.action_payment_provider_onboarding
+msgid "Payment Acquirers"
+msgstr "Intermédiaires de paiement"
+
+#. module: payment_virementmaitrise
+#: model:ir.model,name:payment_virementmaitrise.model_payment_token
+msgid "Payment Token"
+msgstr "Token de paiement"
+
+#. module: payment_virementmaitrise
+#: model:ir.model,name:payment_virementmaitrise.model_payment_transaction
+msgid "Payment Transaction"
+msgstr "Transaction"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_private_key_file
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_pis_private_key_file
+msgid "Private Key File"
+msgstr "Clé privée"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields.selection,name:payment_virementmaitrise.selection__payment_provider__fintecture_viban_unique_key__project
+msgid "Project"
+msgstr "Projet"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__provider
+msgid "Provider"
+msgstr "Prestataire"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_ais_provider
+msgid "Provider Bank"
+msgstr "Banque"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_transaction.py:0
+#, python-format
+msgid "Received data has an invalid structure."
+msgstr "Les données reçues ont une structure invalide."
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_transaction.py:0
+#, python-format
+msgid "Received data is missing transfer state or session status information."
+msgstr "Les données reçues manquent d'informations sur les champs 'transfer state' ou 'session status'."
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_transaction.py:0
+#, python-format
+msgid "Received data with invalid intent state or status: %s"
+msgstr "Données reçues avec un état ou un statut non valide : %s"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "Connection Parameters"
+msgstr "Paramètres de connexion"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__provider
+msgid "The Payment Service Provider to use with this acquirer"
+msgstr "Le prestataire de services de paiement à utiliser avec cet acquéreur"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__fintecture_ais_code
+msgid ""
+"The code value has a limit period of time, then it will expires. Its only "
+"used for oAuth in Fintecture AIS Application"
+msgstr "La valeur du code a une durée limite, puis elle expirera. Cela est seulement"
+"utilisé pour l'oAuth de l'application AIS Fintecture"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_provider.py:0
+#, python-format
+msgid ""
+"The communication with the API failed.\n"
+"Fintecture gave us the following info about the problem:\n"
+"'%s'"
+msgstr "La communication avec l'API a échoué.\n"
+"Le problème remonté est le suivant :\n"
+"'%s'"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__fintecture_ais_app_id
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__fintecture_pis_app_id
+msgid "The key solely used to identify application with Virement Maitrisé"
+msgstr "La clé utilisée uniquement pour identifier l'application avec Virement Maitrisé"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__fintecture_ais_private_key_file
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__fintecture_pis_private_key_file
+msgid ""
+"The private key content is saved in an external file recovered from your "
+"Virement Maitrisé developer account. This signing secret must be set to "
+"authenticate the messages sent from Virement Maitrisé to Odoo."
+msgstr ""
+"Le contenu de la clé privée est sauvegardé dans un fichier externe récupéré depuis votre "
+"console Virement Maitrisé. Cette clé est nécessaire pour "
+"authentifier les communications entre Virement Maitrisé et Odoo."
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_token.py:0
+#, python-format
+msgid "Unable to convert payment token to new API."
+msgstr "Impossible de convertir le token de paiement à la nouvelle API."
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_viban_unique_key
+msgid "Unique key for virtual IBAN"
+msgstr "IBAN virtuel personnalisé selon :"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_provider.py:0
+#, python-format
+msgid ""
+"You cannot set project as unique key because you need install the project "
+"module. <a href='{}'>Install</a>"
+msgstr ""
+"Vous ne pouvez pas choisir 'Projet' sans avoir installé le module. <a href='{}'>Install</a>"
+
+#. module: payment_virementmaitrise
+#: code:addons/payment_virementmaitrise/models/payment_provider.py:0
+#, python-format
+msgid ""
+"You cannot set the provider to Test Mode while it is linked with your "
+"Fintecture account."
+msgstr ""
+"Le mode Test peut être activé seulement si vous enlevez le paramétrage AIS."
+
+#. module: payment_virementmaitrise
+#: model_terms:payment.provider,auth_msg:payment_virementmaitrise.payment_provider_fintecture
+msgid "Your payment has been authorized."
+msgstr "Votre paiement a été autorisé."
+
+#. module: payment_virementmaitrise
+#: model_terms:payment.provider,cancel_msg:payment_virementmaitrise.payment_provider_fintecture
+msgid "Your payment has been cancelled."
+msgstr "Votre paiement a été annulé."
+
+#. module: payment_virementmaitrise
+#: model_terms:payment.provider,pending_msg:payment_virementmaitrise.payment_provider_fintecture
+msgid ""
+"Your payment has been successfully processed but is waiting for approval."
+msgstr "Votre paiement est en attente de confirmation."
+
+#. module: payment_virementmaitrise
+#: model_terms:payment.provider,done_msg:payment_virementmaitrise.payment_provider_fintecture
+msgid "Your payment has been successfully processed. Thank you!"
+msgstr "Votre paiement a été effectué avec succès."
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.account_invoice_document_inherit
+msgid "You can pay via Virement Maitrisé (direct bank transfer)"
+msgstr "Vous pouvez payer via Virement Maitrisé (virement bancaire direct)"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.account_invoice_document_inherit
+msgid "by clicking here"
+msgstr "en cliquant ici"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.account_invoice_document_inherit
+msgid "or scanning the QR code."
+msgstr "ou en scannant le code QR."
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,field_description:payment_virementmaitrise.field_payment_provider__fintecture_webhook_url
+msgid "Webhook URL"
+msgstr "URL du webhook"
+
+#. module: payment_virementmaitrise
+#: model:ir.model.fields,help:payment_virementmaitrise.field_payment_provider__fintecture_webhook_url
+msgid "Configure this webhook URL in your Virement Maitrisé developer console to receive payment notifications"
+msgstr "Configurez cette URL de webhook dans votre console développeur Virement Maitrisé pour recevoir les notifications de paiement"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "Webhook Configuration"
+msgstr "Configuration du webhook"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "Configure this webhook URL in your Virement Maitrisé developer console:"
+msgstr "Configurez cette URL de webhook dans votre console développeur Virement Maitrisé :"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "This webhook allows Odoo to receive real-time payment status updates from Virement Maitrisé."
+msgstr "Ce webhook permet à Odoo de recevoir les mises à jour en temps réel du statut des paiements depuis Virement Maitrisé."
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.inline_form
+msgid "<small>You will be redirected to complete your payment securely.</small>"
+msgstr "<small>Vous serez redirigé pour finaliser votre paiement de manière sécurisée.</small>"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.express_checkout_form
+msgid "Pay with Virement Maitrisé"
+msgstr "Payer avec Virement Maitrisé"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "Virement Maitrisé API Credentials"
+msgstr "Identifiants API Virement Maitrisé"
+
+#. module: payment_virementmaitrise
+#: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
+msgid "Options"
+msgstr "Options"
