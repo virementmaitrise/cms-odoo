@@ -270,6 +270,10 @@ class PaymentTransaction(models.Model):
             (transfer_state and transfer_state in INTENT_STATUS_MAPPING['cancel']) or
             (session_status and session_status in INTENT_STATUS_MAPPING['cancel'])
         )
+        is_error = (
+            (transfer_state and transfer_state in INTENT_STATUS_MAPPING['error']) or
+            (session_status and session_status in INTENT_STATUS_MAPPING['error'])
+        )
         is_draft = (
             (transfer_state and transfer_state in INTENT_STATUS_MAPPING['draft']) and
             (session_status is None or session_status in INTENT_STATUS_MAPPING['draft'])
@@ -445,16 +449,26 @@ class PaymentTransaction(models.Model):
         elif is_cancelled:
             _logger.info('|PaymentTransaction| Canceling current transaction (%r)...' % self)
             self._set_canceled()
-        else:  # classify unknown intent statuses as `error` tx state
+        elif is_error:
             _logger.warning(
-                '|PaymentTransaction| Unknown status - transfer_state: %s, session_status: %s',
+                '|PaymentTransaction| Error status received - transfer_state: %s, session_status: %s',
                 transfer_state, session_status
             )
             self._set_error(
                 "Fintecture: " + _(
-                    "Received data with invalid or unknown status (transfer_state=%s, session_status=%s)",
+                    "Received data with an error status (transfer_state=%s, session_status=%s)",
                     transfer_state, session_status
                 )
+            )
+        else:
+            # Safe default: an unrecognized status is not necessarily a failure - it may be a
+            # new Fintecture status this module doesn't know about yet. Log and leave the
+            # transaction untouched rather than guessing, so a future status never gets
+            # mis-classified as an error (or crashes the webhook) before the mapping is updated.
+            _logger.info(
+                '|PaymentTransaction| Unrecognized status - transfer_state: %s, session_status: %s - '
+                'no action taken (transaction %r left in state %s)',
+                transfer_state, session_status, self, self.state
             )
 
     def _fintecture_create_request_pay(self, state=None):

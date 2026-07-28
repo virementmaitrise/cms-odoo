@@ -104,166 +104,177 @@ class FintectureController(http.Controller):
                 session_id = event.get('session_id', 'unknown')
                 status = event.get('status', '')
                 transfer_state = event.get('transfer_state', '')
+                refund_status = event.get('refund_status', None)
 
-                if event['status'] in ['payment_created', 'payment_partial'] and event['transfer_state'] in [
-                    'completed', 'received', 'insufficient', 'overpaid']:
-                    _logger.info("|FintectureController| Processing webhook for session=%s (status=%s, transfer_state=%s)",
-                               session_id, status, transfer_state)
+                if refund_status:
+                    # Refund notifications carry no status/transfer_state (only refund_status) and
+                    # resolve to the refund transaction, not the original payment, so they don't
+                    # belong in the payment-session flow below. Refunds are already confirmed
+                    # synchronously in _send_refund_request()/_fintecture_refund_payment(), so
+                    # there is nothing left to do here.
+                    _logger.info("|FintectureController| Received refund notification for session=%s (refund_status=%s), no action needed",
+                               session_id, refund_status)
+                    return ''
 
-                    # Handle the notification data to update transaction status
-                    tx_sudo = request.env['payment.transaction'].sudo()._handle_notification_data(
-                        PAYMENT_PROVIDER_NAME, form_data
-                    )
+                _logger.info("|FintectureController| Processing webhook for session=%s (status=%s, transfer_state=%s)",
+                           session_id, status, transfer_state)
 
+                # Handle the notification data to update transaction status.
+                # _process_notification_data() maps status/transfer_state to
+                # draft/pending/done/cancel/error via INTENT_STATUS_MAPPING and calls
+                # _set_pending()/_set_done()/_set_canceled()/_set_error() accordingly.
+                # This must run for every verified event, not just successful payments -
+                # otherwise pending/cancelled/unsuccessful transactions are never
+                # reflected in Odoo and the customer gets no feedback (risk of duplicate payment).
+                tx_sudo = request.env['payment.transaction'].sudo()._handle_notification_data(
+                    PAYMENT_PROVIDER_NAME, form_data
+                )
+
+                if not tx_sudo:
+                    _logger.warning("|FintectureController| No transaction returned from _handle_notification_data")
+                elif tx_sudo.state != 'done':
+                    _logger.info("|FintectureController| Transaction %s set to state '%s', no post-processing needed",
+                               tx_sudo.reference, tx_sudo.state)
+                else:
                     # ================================================================
                     # CRITICAL: Post-process transaction immediately
                     # Webhooks don't have user sessions, so we can't use monitor_transaction()
                     # Instead, we directly trigger post-processing to create account.payment records
                     # ================================================================
-                    if tx_sudo:
-                        _logger.info("|FintectureController| Post-processing transaction %s (state: %s) from webhook",
-                                   tx_sudo.reference, tx_sudo.state)
+                    _logger.info("|FintectureController| Post-processing transaction %s (state: %s) from webhook",
+                               tx_sudo.reference, tx_sudo.state)
 
-                        # ================================================================
-                        # IMPORTANT: Check for additional payment FIRST (before idempotency check)
-                        #
-                        # Partial payments can be detected using multiple indicators:
-                        # 1. transaction_id: Unique ID for each transfer (may not be present for manual transfers)
-                        # 2. received_amount: Total amount received across all payments
-                        # 3. last_transaction_amount: Amount of this specific payment
-                        #
-                        # This check must happen regardless of sale order state
-                        # ================================================================
+                    # ================================================================
+                    # IMPORTANT: Check for additional payment FIRST (before idempotency check)
+                    #
+                    # Partial payments can be detected using multiple indicators:
+                    # 1. transaction_id: Unique ID for each transfer (may not be present for manual transfers)
+                    # 2. received_amount: Total amount received across all payments
+                    # 3. last_transaction_amount: Amount of this specific payment
+                    #
+                    # This check must happen regardless of sale order state
+                    # ================================================================
 
-                        # Get existing payments for this transaction
-                        existing_payments = request.env['account.payment'].sudo().search([
-                            ('payment_transaction_id', '=', tx_sudo.id),
-                            ('state', 'in', ['posted', 'in_process', 'paid']),
-                        ])
-                        existing_payments_count = len(existing_payments)
-                        total_existing_amount = sum(existing_payments.mapped('amount'))
+                    # Get existing payments for this transaction
+                    existing_payments = request.env['account.payment'].sudo().search([
+                        ('payment_transaction_id', '=', tx_sudo.id),
+                        ('state', 'in', ['posted', 'in_process', 'paid']),
+                    ])
+                    existing_payments_count = len(existing_payments)
+                    total_existing_amount = sum(existing_payments.mapped('amount'))
 
-                        _logger.debug("|FintectureController| Existing payments: %s, total amount: %s",
-                                     existing_payments_count, total_existing_amount)
+                    _logger.debug("|FintectureController| Existing payments: %s, total amount: %s",
+                                 existing_payments_count, total_existing_amount)
 
-                        # Detect additional payment using multiple strategies
-                        is_additional_payment = False
-                        additional_payment_amount = 0
-                        detection_method = None
+                    # Detect additional payment using multiple strategies
+                    is_additional_payment = False
+                    additional_payment_amount = 0
+                    detection_method = None
 
-                        if tx_sudo.state == 'done' and existing_payments_count > 0:
-                            # Strategy 1: Check transaction_id (for PIS/instant transfers)
-                            fintecture_transaction_id = form_data.get('transaction_id', None)
-                            if fintecture_transaction_id:
-                                is_additional_payment = True
-                                detection_method = 'transaction_id'
-                                _logger.debug("|FintectureController| Additional payment detected via transaction_id: %s",
-                                            fintecture_transaction_id)
+                    if tx_sudo.state == 'done' and existing_payments_count > 0:
+                        # Strategy 1: Check transaction_id (for PIS/instant transfers)
+                        fintecture_transaction_id = form_data.get('transaction_id', None)
+                        if fintecture_transaction_id:
+                            is_additional_payment = True
+                            detection_method = 'transaction_id'
+                            _logger.debug("|FintectureController| Additional payment detected via transaction_id: %s",
+                                        fintecture_transaction_id)
 
-                            # Strategy 2: Compare received_amount vs existing payments (for manual transfers)
-                            received_amount_str = form_data.get('received_amount', None)
-                            if received_amount_str:
+                        # Strategy 2: Compare received_amount vs existing payments (for manual transfers)
+                        received_amount_str = form_data.get('received_amount', None)
+                        if received_amount_str:
+                            try:
+                                received_amount = float(received_amount_str)
+                                # If received_amount > sum of existing payments, there's a new payment
+                                if received_amount > total_existing_amount + 0.01:  # 0.01 tolerance for float comparison
+                                    is_additional_payment = True
+                                    additional_payment_amount = received_amount - total_existing_amount
+                                    detection_method = 'received_amount'
+                                    _logger.debug("|FintectureController| Additional payment detected via received_amount: "
+                                                "total=%s, existing=%s, new=%s",
+                                                received_amount, total_existing_amount, additional_payment_amount)
+                            except (ValueError, TypeError) as e:
+                                _logger.warning("|FintectureController| Invalid received_amount: %s", received_amount_str)
+
+                        # Strategy 3: Use last_transaction_amount as fallback
+                        if not is_additional_payment:
+                            last_transaction_amount_str = form_data.get('last_transaction_amount', None)
+                            if last_transaction_amount_str:
                                 try:
-                                    received_amount = float(received_amount_str)
-                                    # If received_amount > sum of existing payments, there's a new payment
-                                    if received_amount > total_existing_amount + 0.01:  # 0.01 tolerance for float comparison
+                                    last_transaction_amount = float(last_transaction_amount_str)
+                                    # If we have a last_transaction_amount and it's different from any existing payment
+                                    # and total would be different, it's likely a new payment
+                                    if not any(abs(p.amount - last_transaction_amount) < 0.01 for p in existing_payments):
                                         is_additional_payment = True
-                                        additional_payment_amount = received_amount - total_existing_amount
-                                        detection_method = 'received_amount'
-                                        _logger.debug("|FintectureController| Additional payment detected via received_amount: "
-                                                    "total=%s, existing=%s, new=%s",
-                                                    received_amount, total_existing_amount, additional_payment_amount)
+                                        additional_payment_amount = last_transaction_amount
+                                        detection_method = 'last_transaction_amount'
+                                        _logger.debug("|FintectureController| Additional payment detected via last_transaction_amount: %s",
+                                                    last_transaction_amount)
                                 except (ValueError, TypeError) as e:
-                                    _logger.warning("|FintectureController| Invalid received_amount: %s", received_amount_str)
+                                    _logger.warning("|FintectureController| Invalid last_transaction_amount: %s",
+                                                  last_transaction_amount_str)
 
-                            # Strategy 3: Use last_transaction_amount as fallback
-                            if not is_additional_payment:
-                                last_transaction_amount_str = form_data.get('last_transaction_amount', None)
-                                if last_transaction_amount_str:
-                                    try:
-                                        last_transaction_amount = float(last_transaction_amount_str)
-                                        # If we have a last_transaction_amount and it's different from any existing payment
-                                        # and total would be different, it's likely a new payment
-                                        if not any(abs(p.amount - last_transaction_amount) < 0.01 for p in existing_payments):
-                                            is_additional_payment = True
-                                            additional_payment_amount = last_transaction_amount
-                                            detection_method = 'last_transaction_amount'
-                                            _logger.debug("|FintectureController| Additional payment detected via last_transaction_amount: %s",
-                                                        last_transaction_amount)
-                                    except (ValueError, TypeError) as e:
-                                        _logger.warning("|FintectureController| Invalid last_transaction_amount: %s",
-                                                      last_transaction_amount_str)
+                    if is_additional_payment:
+                        _logger.info("|FintectureController| Additional payment detected for %s (method: %s, amount: %s)",
+                                   tx_sudo.reference, detection_method, additional_payment_amount)
+                        try:
+                            self._handle_additional_payment(tx_sudo, form_data)
+                        except Exception as e:
+                            _logger.error("|FintectureController| Error handling additional payment: %s", str(e))
+                            _logger.exception("|FintectureController| Full error:")
+                        # Return early - additional payment handled
+                        return ''
 
-                        if is_additional_payment:
-                            _logger.info("|FintectureController| Additional payment detected for %s (method: %s, amount: %s)",
-                                       tx_sudo.reference, detection_method, additional_payment_amount)
-                            try:
-                                self._handle_additional_payment(tx_sudo, form_data)
-                            except Exception as e:
-                                _logger.error("|FintectureController| Error handling additional payment: %s", str(e))
-                                _logger.exception("|FintectureController| Full error:")
-                            # Return early - additional payment handled
-                            return ''
+                    # Check if transaction needs post-processing (idempotency check)
+                    # Look for associated sale order to check if already confirmed
+                    sale_order = request.env['sale.order'].sudo().search([
+                        ('transaction_ids', 'in', tx_sudo.id)
+                    ], limit=1)
 
-                        # Check if transaction needs post-processing (idempotency check)
-                        # Look for associated sale order to check if already confirmed
-                        sale_order = request.env['sale.order'].sudo().search([
-                            ('transaction_ids', 'in', tx_sudo.id)
-                        ], limit=1)
-
-                        if tx_sudo.state == 'done' and sale_order and sale_order.state in ['sale', 'done']:
-                            _logger.info("|FintectureController| Transaction %s already post-processed (sale order %s in state %s)",
-                                       tx_sudo.reference, sale_order.name, sale_order.state)
-                            # Regular duplicate webhook - just try reconciliation
-                            try:
-                                self._reconcile_payment_with_invoice(tx_sudo)
-                            except Exception as e:
-                                _logger.warning("|FintectureController| Reconciliation attempt failed: %s", str(e))
-                        else:
-                            # Use a savepoint to isolate transaction errors
-                            # This allows us to rollback just this operation if it fails (e.g., duplicate keys)
-                            # without aborting the entire HTTP request transaction
-                            try:
-                                with request.env.cr.savepoint():
-                                    # Directly trigger post-processing (creates account.payment and reconciles)
-                                    tx_sudo._post_process()
-                                    _logger.info("|FintectureController| Successfully post-processed transaction %s", tx_sudo.reference)
-
-                                    # After post-processing, reconcile payment with invoice if needed
-                                    self._reconcile_payment_with_invoice(tx_sudo)
-
-                            except Exception as e:
-                                # Savepoint automatically rolled back the failed operation
-                                # Transaction is now clean and we can safely continue
-                                error_msg = str(e)
-
-                                # Check if this is a concurrent processing error (expected when multiple webhooks arrive)
-                                is_concurrent_error = (
-                                    'duplicate key value violates unique constraint' in error_msg or
-                                    'could not serialize access due to concurrent update' in error_msg
-                                )
-
-                                if is_concurrent_error:
-                                    # This is normal - Fintecture sends multiple webhooks simultaneously
-                                    # The parallel request already completed successfully, nothing more to do
-                                    _logger.info("|FintectureController| Concurrent webhook detected for transaction %s, already processed by parallel request",
-                                                  tx_sudo.reference)
-                                else:
-                                    # This is an unexpected error that needs investigation
-                                    _logger.error("|FintectureController| Unexpected error during post-processing of transaction %s: %s",
-                                                tx_sudo.reference, error_msg)
-                                    _logger.exception("|FintectureController| Full post-processing error:")
-                                    # Don't raise - return 200 to prevent webhook retries
-                                    # The error is logged and can be investigated
+                    if tx_sudo.state == 'done' and sale_order and sale_order.state in ['sale', 'done']:
+                        _logger.info("|FintectureController| Transaction %s already post-processed (sale order %s in state %s)",
+                                   tx_sudo.reference, sale_order.name, sale_order.state)
+                        # Regular duplicate webhook - just try reconciliation
+                        try:
+                            self._reconcile_payment_with_invoice(tx_sudo)
+                        except Exception as e:
+                            _logger.warning("|FintectureController| Reconciliation attempt failed: %s", str(e))
                     else:
-                        _logger.warning("|FintectureController| No transaction returned from _handle_notification_data")
-                else:
-                    _logger.info("|FintectureController| Received webhook of payment with session={0}) has the "
-                                 " status='{1}' and transfer_state={2}".format(
-                        event.get('session_id'),
-                        event.get('status'),
-                        event.get('transfer_state')
-                    ))
+                        # Use a savepoint to isolate transaction errors
+                        # This allows us to rollback just this operation if it fails (e.g., duplicate keys)
+                        # without aborting the entire HTTP request transaction
+                        try:
+                            with request.env.cr.savepoint():
+                                # Directly trigger post-processing (creates account.payment and reconciles)
+                                tx_sudo._post_process()
+                                _logger.info("|FintectureController| Successfully post-processed transaction %s", tx_sudo.reference)
+
+                                # After post-processing, reconcile payment with invoice if needed
+                                self._reconcile_payment_with_invoice(tx_sudo)
+
+                        except Exception as e:
+                            # Savepoint automatically rolled back the failed operation
+                            # Transaction is now clean and we can safely continue
+                            error_msg = str(e)
+
+                            # Check if this is a concurrent processing error (expected when multiple webhooks arrive)
+                            is_concurrent_error = (
+                                'duplicate key value violates unique constraint' in error_msg or
+                                'could not serialize access due to concurrent update' in error_msg
+                            )
+
+                            if is_concurrent_error:
+                                # This is normal - Fintecture sends multiple webhooks simultaneously
+                                # The parallel request already completed successfully, nothing more to do
+                                _logger.info("|FintectureController| Concurrent webhook detected for transaction %s, already processed by parallel request",
+                                              tx_sudo.reference)
+                            else:
+                                # This is an unexpected error that needs investigation
+                                _logger.error("|FintectureController| Unexpected error during post-processing of transaction %s: %s",
+                                            tx_sudo.reference, error_msg)
+                                _logger.exception("|FintectureController| Full post-processing error:")
+                                # Don't raise - return 200 to prevent webhook retries
+                                # The error is logged and can be investigated
             else:
                 _logger.error("|FintectureController| Invalid received webhook content. Canceling processing...")
         except Exception as e:

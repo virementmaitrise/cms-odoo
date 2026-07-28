@@ -2,7 +2,7 @@
 
 {
     'name': 'Virement Maitrisé',
-    'version': '18.0.1.1.0',
+    'version': '18.0.1.1.1',
     'category': 'Accounting/Payment Providers',
     'summary': 'Payment Provider: Virement Maitrisé Implementation',
     'description': """Virement Maitrisé Payment Provider for Odoo 18 (powered by Fintecture)""",
