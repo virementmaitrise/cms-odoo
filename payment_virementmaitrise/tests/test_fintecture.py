@@ -44,3 +44,44 @@ class FintectureTest(FintectureCommon):
             # Verify the error message is user-friendly
             self.assertIn('Invalid authentication', str(context.exception))
             self.assertIn('credential', str(context.exception).lower())
+
+    def test_success_after_rejected_attempt_sets_done(self):
+        """A failed bank attempt is retryable in the same session: the later success must win."""
+        tx = self._create_transaction('redirect')
+
+        for status, transfer_state in [
+            ('sca_required', 'rejected'),
+            ('payment_created', 'processing'),
+            ('payment_created', 'completed'),
+        ]:
+            tx._process_notification_data({'status': status, 'transfer_state': transfer_state})
+
+        self.assertEqual(tx.state, 'done')
+
+    def test_success_on_cancelled_transaction_sets_done(self):
+        tx = self._create_transaction('redirect', state='cancel')
+
+        tx._process_notification_data({'status': 'payment_created', 'transfer_state': 'received'})
+        self.assertEqual(tx.state, 'done')
+
+    def test_observed_webhook_sequences(self):
+        """Webhook sequences observed in production (session status, transfer state) and the final Odoo state."""
+        sequences = [
+            ([('payment_pending', 'processing'), ('payment_created', 'completed')], 'done'),
+            ([('payment_created', 'completed')], 'done'),
+            ([('payment_created', 'sent')], 'done'),
+            ([('sca_required', 'rejected'), ('payment_created', 'processing'), ('payment_created', 'completed')], 'done'),
+            ([('payment_unsuccessful', 'rejected'), ('payment_pending', 'processing'), ('payment_created', 'completed')], 'done'),
+            ([('sca_required', 'rejected')], 'cancel'),
+            ([('payment_unsuccessful', 'rejected')], 'cancel'),
+            ([('payment_cancelled', None)], 'cancel'),
+            ([('payment_cancelled', 'rejected')], 'cancel'),
+            ([('payment_expired', None)], 'cancel'),
+            ([('payment_expired', 'rejected')], 'cancel'),
+        ]
+        for i, (webhooks, expected_state) in enumerate(sequences):
+            with self.subTest(webhooks=webhooks):
+                tx = self._create_transaction('redirect', reference=f'{self.reference}-{i}')
+                for status, transfer_state in webhooks:
+                    tx._process_notification_data({'status': status, 'transfer_state': transfer_state})
+                self.assertEqual(tx.state, expected_state)

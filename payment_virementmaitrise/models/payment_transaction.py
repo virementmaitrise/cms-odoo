@@ -400,9 +400,9 @@ class PaymentTransaction(models.Model):
                             new_payment.invalidate_recordset(['is_reconciled', 'is_matched'])
                             invoice.invalidate_recordset(['payment_state'])
 
-                            # Force recompute by accessing the fields
-                            _ = new_payment.is_reconciled
-                            _ = invoice.payment_state
+                            # Force recompute by accessing the fields. Do not bind `_`: that shadows _() for the whole method.
+                            new_payment.is_reconciled
+                            invoice.payment_state
 
                             # If invoice is now fully paid, payment state should auto-transition
                             if new_payment.state == 'in_process' and invoice.payment_state == 'paid':
@@ -439,7 +439,9 @@ class PaymentTransaction(models.Model):
                         self.write({'amount': payment_amount})
 
                     _logger.debug('|PaymentTransaction| Transaction state is %s, setting to done', self.state)
-                    self._set_done()
+                    # A received payment wins over an earlier cancel: after a failed bank attempt the
+                    # payer can retry in the same session and still pay.
+                    self._set_done(extra_allowed_states=('cancel',))
                     # NOTE: Payment reconciliation is handled in the webhook controller after _post_process()
                 else:
                     _logger.debug('|PaymentTransaction| Transaction already in done state, skipping _set_done()')
