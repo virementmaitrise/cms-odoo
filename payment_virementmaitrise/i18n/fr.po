@@ -407,3 +407,9 @@ msgstr "Identifiants API Virement Maitrisé"
 #: model_terms:ir.ui.view,arch_db:payment_virementmaitrise.payment_provider_form
 msgid "Options"
 msgstr "Options"
+
+#. module: payment_virementmaitrise
+#. odoo-python
+#: code:addons/payment_virementmaitrise/models/payment_transaction.py:0
+msgid "The bank did not confirm the payment."
+msgstr "La banque n'a pas confirmé le paiement."

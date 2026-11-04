@@ -378,6 +378,30 @@ class PaymentProvider(models.Model):
                 'Error: %s', session_id, error_message
             ))
 
+    def _fintecture_get_payment_status(self, session_id):
+        """ Fetch a payment session from the API and return its status in the webhook payload shape.
+
+        :param str session_id: The Fintecture session ID
+        :return: The session_id, status, transfer_state and, once funds are received, received_amount
+        :rtype: dict
+        """
+        self.ensure_one()
+        self._authenticate_in_pis()
+        session = fintecture.Payment.retrieve(session_id)
+        # GET /pis/v2/payments/{id} puts the session status in meta and the transfer state in data.attributes.
+        attributes = session.get('data', {}).get('attributes', {})
+        payment_status = {
+            'session_id': session_id,
+            'status': session.get('meta', {}).get('status'),
+            'transfer_state': attributes.get('transfer_state'),
+        }
+        # The done branch books received_amount as the paid amount: forward it only once money arrived,
+        # so a partial payment is not booked in full and a zero does not wipe the order amount.
+        received_amount = attributes.get('received_amount')
+        if received_amount and float(received_amount) > 0:
+            payment_status['received_amount'] = received_amount
+        return payment_status
+
     def fintecture_webhook_signature(self, payload, digest, signature, request_id):
         _logger.info('|PaymentProvider| Retrieve webhook content and validate signature...')
 

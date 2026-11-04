@@ -13,7 +13,7 @@ from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.payment import utils as payment_utils
 from .. import utils as fintecture_utils
-from ..const import INTENT_STATUS_MAPPING, PAYMENT_PROVIDER_NAME
+from ..const import DISPLAY_NAME, INTENT_STATUS_MAPPING, PAYMENT_PROVIDER_NAME
 
 _logger = logging.getLogger(__name__)
 
@@ -202,7 +202,7 @@ class PaymentTransaction(models.Model):
                 'line': 188
             })
             raise ValidationError(
-                "Fintecture: " + _("Received data has an invalid structure.")
+                DISPLAY_NAME + ": " + _("Received data has an invalid structure.")
             )
 
         found_trx = payment_transaction_model.search([
@@ -212,16 +212,16 @@ class PaymentTransaction(models.Model):
         _logger.debug('|PaymentTransaction| found_trx: %r' % found_trx)
         if not found_trx:
             raise ValidationError(
-                "Fintecture: " + _("No transaction found matching reference '%s.'", session_id)
+                DISPLAY_NAME + ": " + _("No transaction found matching reference '%s.'", session_id)
             )
         return found_trx
 
     def _process_notification_data(self, notification_data):
         """ Override of payment to process the transaction based on Fintecture data.
 
-        SECURITY: This method should ONLY be called from the webhook endpoint, never from callback.
-        The callback URL receives untrusted GET parameters that users can manipulate.
-        Only webhook data has been cryptographically verified and can be trusted.
+        SECURITY: Only call this with trusted data: a signed webhook or the payment session fetched
+        from the API (_fintecture_refresh_state_from_api). Never with the callback GET parameters,
+        which users can manipulate.
 
         Note: self.ensure_one()
 
@@ -240,7 +240,7 @@ class PaymentTransaction(models.Model):
         # Webhook provides both 'status' (session status) and 'transfer_state'
         if self.operation != 'online_redirect':
             raise ValidationError(
-                "Fintecture: " + _("Invalid transaction operation.")
+                DISPLAY_NAME + ": " + _("Invalid transaction operation.")
             )
 
         transfer_state = notification_data.get('transfer_state', None)
@@ -252,7 +252,7 @@ class PaymentTransaction(models.Model):
         # Require at least one status indicator
         if not transfer_state and not session_status:
             raise ValidationError(
-                "Fintecture: " + _("Received data is missing both transfer state and session status information.")
+                DISPLAY_NAME + ": " + _("Received data is missing both transfer state and session status information.")
             )
 
         # Determine transaction state based on available information
@@ -284,7 +284,10 @@ class PaymentTransaction(models.Model):
             pass
         elif is_pending:
             _logger.info('|PaymentTransaction| Setting current transaction (%r) as pending...' % self)
-            self._set_pending()
+            # Only the API refresh may reopen a failed transaction: webhooks can arrive out of order,
+            # and a stale pending one would hide a real cancel.
+            reopenable = ('cancel', 'error') if self.env.context.get('fintecture_api_refresh') else ()
+            self._set_pending(extra_allowed_states=reopenable)
         elif is_done:
             _logger.info('|PaymentTransaction| Setting current transaction (%r) as done...' % self)
 
@@ -328,7 +331,7 @@ class PaymentTransaction(models.Model):
                     journal = self.provider_id.journal_id if self.provider_id.journal_id else self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
                     payment_method_line = self.env['account.payment.method.line'].search([
                         ('journal_id', '=', journal.id),
-                        ('payment_method_id.code', '=', 'fintecture'),
+                        ('payment_method_id.code', '=', PAYMENT_PROVIDER_NAME),
                     ], limit=1)
 
                     _logger.debug('|PaymentTransaction| Using journal: %s, payment method line: %s', journal.name, payment_method_line.name if payment_method_line else 'None')
@@ -453,15 +456,11 @@ class PaymentTransaction(models.Model):
             self._set_canceled()
         elif is_error:
             _logger.warning(
-                '|PaymentTransaction| Error status received - transfer_state: %s, session_status: %s',
-                transfer_state, session_status
+                '|PaymentTransaction| Error status received for %s - transfer_state: %s, session_status: %s',
+                self.reference, transfer_state, session_status
             )
-            self._set_error(
-                "Fintecture: " + _(
-                    "Received data with an error status (transfer_state=%s, session_status=%s)",
-                    transfer_state, session_status
-                )
-            )
+            # state_message is shown to the payer on the order page: no raw statuses, no operator name.
+            self._set_error(_("The bank did not confirm the payment."))
         else:
             # Safe default: an unrecognized status is not necessarily a failure - it may be a
             # new Fintecture status this module doesn't know about yet. Log and leave the
@@ -472,6 +471,26 @@ class PaymentTransaction(models.Model):
                 'no action taken (transaction %r left in state %s)',
                 transfer_state, session_status, self, self.state
             )
+
+    def _fintecture_refresh_state_from_api(self):
+        """ Apply the current payment session status from the API to a cancelled or errored transaction.
+
+        After a failed bank attempt the payer can retry in the same session and return before the
+        success webhooks arrive. Fetched with the provider credentials, so trusted like a signed
+        webhook. Any failure keeps the current state.
+        """
+        self.ensure_one()
+        if self.state not in ('cancel', 'error'):
+            return
+        try:
+            with self.env.cr.savepoint():
+                notification_data = self.provider_id._fintecture_get_payment_status(self.provider_reference)
+                _logger.info('|PaymentTransaction| API status for %s: %s', self.reference, notification_data)
+                self.with_context(fintecture_api_refresh=True)._process_notification_data(notification_data)
+            _logger.info('|PaymentTransaction| State of %s after API refresh: %s', self.reference, self.state)
+        except Exception as e:
+            _logger.warning('|PaymentTransaction| Could not refresh %s from the API, keeping state %s: %s',
+                            self.reference, self.state, e)
 
     def _fintecture_create_request_pay(self, state=None):
         _logger.info('|PaymentTransaction| Creating the URL for request to pay...')

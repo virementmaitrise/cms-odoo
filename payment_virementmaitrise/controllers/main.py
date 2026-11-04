@@ -4,6 +4,7 @@ import collections
 
 from odoo import http
 from odoo.http import request
+from odoo.service.model import PG_CONCURRENCY_EXCEPTIONS_TO_RETRY
 
 from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 from ..const import CALLBACK_URL, WEBHOOK_URL, PAYMENT_PROVIDER_NAME
@@ -17,14 +18,15 @@ class FintectureController(http.Controller):
     def fintecture_callback(self, **data):
         """ Display payment status after user returns from Fintecture payment page.
 
-        SECURITY: Callback URL is READ-ONLY and informational only.
-        GET parameters are untrusted (user can modify them in browser).
-        Only the cryptographically signed webhook can update transaction state.
+        SECURITY: GET parameters are untrusted (user can modify them in browser) and never update
+        the transaction; session_id is only used to look it up. A cancelled or errored transaction is
+        re-read from the API with the provider credentials, trusted like the signed webhook, for a
+        payer who retried and paid before the success webhooks arrived.
 
-        :param dict data: The callback data (UNTRUSTED - for display purposes only)
+        :param dict data: The callback data (UNTRUSTED - used only to find the transaction)
         :return: Redirect to payment status page
         """
-        _logger.info('|FintectureController| Received callback from Fintecture (informational only)')
+        _logger.info('|FintectureController| Received callback from Fintecture')
         _logger.info('|FintectureController| Callback data (UNTRUSTED): %s', data)
 
         # Retrieve the transaction based on the session_id included in the return url
@@ -47,6 +49,8 @@ class FintectureController(http.Controller):
                     callback_status, callback_transfer_state)
         _logger.info('|FintectureController| Actual transaction state from database: %s', tx_sudo.state)
 
+        tx_sudo._fintecture_refresh_state_from_api()
+
         # Check if webhook has processed the transaction yet
         if tx_sudo.state == 'draft':
             # Webhook hasn't processed yet - show processing message
@@ -56,7 +60,6 @@ class FintectureController(http.Controller):
             _logger.info('|FintectureController| Transaction pending - awaiting payment confirmation')
 
         _logger.info('|FintectureController| Callback complete, redirecting user to /payment/status')
-        _logger.info('|FintectureController| Webhook will update transaction state asynchronously')
 
         # Register transaction in session so /payment/status can find it
         # This is required for the status page to display the correct transaction
@@ -219,6 +222,8 @@ class FintectureController(http.Controller):
                                    tx_sudo.reference, detection_method, additional_payment_amount)
                         try:
                             self._handle_additional_payment(tx_sudo, form_data)
+                        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                            raise
                         except Exception as e:
                             _logger.error("|FintectureController| Error handling additional payment: %s", str(e))
                             _logger.exception("|FintectureController| Full error:")
@@ -231,12 +236,14 @@ class FintectureController(http.Controller):
                         ('transaction_ids', 'in', tx_sudo.id)
                     ], limit=1)
 
-                    if tx_sudo.state == 'done' and sale_order and sale_order.state in ['sale', 'done']:
+                    if tx_sudo.state == 'done' and (tx_sudo.is_post_processed or sale_order.state in ['sale', 'done']):
                         _logger.info("|FintectureController| Transaction %s already post-processed (sale order %s in state %s)",
-                                   tx_sudo.reference, sale_order.name, sale_order.state)
+                                   tx_sudo.reference, sale_order.name or '-', sale_order.state or '-')
                         # Regular duplicate webhook - just try reconciliation
                         try:
                             self._reconcile_payment_with_invoice(tx_sudo)
+                        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                            raise
                         except Exception as e:
                             _logger.warning("|FintectureController| Reconciliation attempt failed: %s", str(e))
                     else:
@@ -252,20 +259,21 @@ class FintectureController(http.Controller):
                                 # After post-processing, reconcile payment with invoice if needed
                                 self._reconcile_payment_with_invoice(tx_sudo)
 
+                        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+                            # Odoo retries the whole request, which then sees the parallel request's
+                            # committed post-processing. Swallowing it lets both requests skip it.
+                            raise
                         except Exception as e:
                             # Savepoint automatically rolled back the failed operation
                             # Transaction is now clean and we can safely continue
                             error_msg = str(e)
 
                             # Check if this is a concurrent processing error (expected when multiple webhooks arrive)
-                            is_concurrent_error = (
-                                'duplicate key value violates unique constraint' in error_msg or
-                                'could not serialize access due to concurrent update' in error_msg
-                            )
+                            is_concurrent_error = 'duplicate key value violates unique constraint' in error_msg
 
                             if is_concurrent_error:
-                                # This is normal - Fintecture sends multiple webhooks simultaneously
-                                # The parallel request already completed successfully, nothing more to do
+                                # Fintecture sends multiple webhooks simultaneously: the parallel request
+                                # inserted the same record first
                                 _logger.info("|FintectureController| Concurrent webhook detected for transaction %s, already processed by parallel request",
                                               tx_sudo.reference)
                             else:
@@ -277,6 +285,8 @@ class FintectureController(http.Controller):
                                 # The error is logged and can be investigated
             else:
                 _logger.error("|FintectureController| Invalid received webhook content. Canceling processing...")
+        except PG_CONCURRENCY_EXCEPTIONS_TO_RETRY:
+            raise
         except Exception as e:
             _logger.error("""
                 |FintectureController| An error occur when manage feedback data 
